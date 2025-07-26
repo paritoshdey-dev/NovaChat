@@ -25,27 +25,15 @@ app.use(cors({
     credentials:true
 }));
 
-try {
-    console.log("Loading auth routes...");
     app.use("/api/auth",authRoutes);
-    console.log("✅ Loaded /api/auth");
-} catch (error) {
-    console.error("❌ Failed to load /api/auth", e);
-}
-try {
-    console.log("Loading message routes...");
+
+
+
+
     app.use("/api/messages",messageRoutes);
-    console.log("✅ Loaded /api/messages");
-} catch (error) {
-    console.error("❌ Failed to load /api/messages", e);
-}
-try {
-    console.log("Loading AI bot routes...");
+
+
     app.use("/api/groq", aiBotRoutes);
-    console.log("✅ Loaded /api/groq");
-} catch (error) {
-    console.error("❌ Failed to load /api/groq", e);
-}
 
 
 
@@ -53,7 +41,7 @@ try {
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-  app.get("/*", (req, res) => {
+app.get(/(.*)/, (req, res) => {
     res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
   });
 }
