@@ -23,6 +23,7 @@ const Sidebar = () => {
 
   if (isUsersLoading) return <SidebarSkeleton />;
 
+
   return (
     <aside className="h-full w-20 lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200">
       <div className="border-b border-base-300 w-full p-5">
@@ -58,9 +59,17 @@ const Sidebar = () => {
           >
             <div className="relative mx-auto lg:mx-0">
               <img
-                src={user.profilePic || "/avatar.png"}
+                src={
+                  user.isBot
+                  ? "/bot-avatar.png" 
+                  : user.profilePic || "/avatar.png"
+                }
                 alt={user.name}
                 className="size-12 object-cover rounded-full"
+                onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = user.isBot ? "/bot-avatar.png" : "/avatar.png";
+                }}
               />
               {onlineUsers.includes(user._id) && (
                 <span
@@ -74,7 +83,11 @@ const Sidebar = () => {
             <div className="hidden lg:block text-left min-w-0">
               <div className="font-medium truncate">{user.fullName}</div>
               <div className="text-sm text-zinc-400">
-                {onlineUsers.includes(user._id) ? "Online" : "Offline"}
+                {user.isBot
+                  ? "with LLaMA 3"
+                  : onlineUsers.includes(user._id)
+                  ? "Online"
+                  : "Offline"}
               </div>
             </div>
           </button>

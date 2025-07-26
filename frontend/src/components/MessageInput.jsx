@@ -7,11 +7,16 @@ const MessageInput = () => {
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
-  const { sendMessage } = useChatStore();
+
+  const {
+    sendMessage,
+    sendBotMessage,
+    isBotChat, 
+  } = useChatStore();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (!file.type.startsWith("image/")) {
+    if (!file?.type?.startsWith("image/")) {
       toast.error("Please select an image file");
       return;
     }
@@ -33,12 +38,15 @@ const MessageInput = () => {
     if (!text.trim() && !imagePreview) return;
 
     try {
-      await sendMessage({
-        text: text.trim(),
-        image: imagePreview,
-      });
+      if (isBotChat) {
+        await sendBotMessage(text.trim());
+      } else {
+        await sendMessage({
+          text: text.trim(),
+          image: imagePreview,
+        });
+      }
 
-      // Clear form
       setText("");
       setImagePreview(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -59,8 +67,7 @@ const MessageInput = () => {
             />
             <button
               onClick={removeImage}
-              className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-base-300
-              flex items-center justify-center"
+              className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-base-300 flex items-center justify-center"
               type="button"
             >
               <X className="size-3" />
@@ -74,7 +81,7 @@ const MessageInput = () => {
           <input
             type="text"
             className="w-full input input-bordered rounded-lg input-sm sm:input-md"
-            placeholder="Type a message..."
+            placeholder={isBotChat ? "Ask your assistant..." : "Type a message..."}
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
@@ -84,16 +91,20 @@ const MessageInput = () => {
             className="hidden"
             ref={fileInputRef}
             onChange={handleImageChange}
+            disabled={isBotChat} // Optional: disable image in bot mode
           />
 
-          <button
-            type="button"
-            className={`hidden sm:flex btn btn-circle
-                     ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <Image size={20} />
-          </button>
+          {!isBotChat && (
+            <button
+              type="button"
+              className={`hidden sm:flex btn btn-circle ${
+                imagePreview ? "text-emerald-500" : "text-zinc-400"
+              }`}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <Image size={20} />
+            </button>
+          )}
         </div>
         <button
           type="submit"
@@ -106,4 +117,5 @@ const MessageInput = () => {
     </div>
   );
 };
+
 export default MessageInput;

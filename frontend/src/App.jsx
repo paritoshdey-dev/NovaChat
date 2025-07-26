@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Toaster } from 'react-hot-toast';
 import { Navigate, Route,Routes } from 'react-router-dom'
 import {useAuthStore} from "./store/useAuthStore.js";
 import {useThemeStore} from "./store/useThemeStore.js";
@@ -39,6 +40,8 @@ function App() {
         <Route path="/settings" element={<SettingsPage/>}/>
         <Route path="/profile" element={authUser ? <ProfilePage/> :<Navigate to="/login"/>}/>
       </Routes>
+
+      <Toaster position="top-center" reverseOrder={false} />
     </div>
   )
 }

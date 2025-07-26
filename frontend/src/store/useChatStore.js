@@ -5,19 +5,23 @@ import {useAuthStore} from "./useAuthStore";
 
 export const useChatStore = create((set,get) =>({
     messages:[],
+    botMessages: [], 
     users:[],
     selectedUser:null,
     isUsersLoading:false,
     isMessagesLoading:false,
+    isBotChat:false,
+    setMessages: (msgs) => set({ botMessages: msgs }),
+    addMessage: (msg) => set((state) => ({ botMessages: [...state.messages, msg] })),
     
 
     getUsers:async()=>{
         set({isUsersLoading:true});
         try{
-            console.log("Calling /messages/users");
             const res=await axiosInstance.get("/messages/users");
-            console.log("Fetched users:", res.data); 
-            set({users:res.data});
+            const users = res.data;
+            users.sort((a, b) => (b.isBot ? 1 : 0) - (a.isBot ? 1 : 0));
+            set({ users });
         }catch(error){
             toast.error(error.response.data.message);
         }finally{
@@ -47,7 +51,7 @@ export const useChatStore = create((set,get) =>({
         }
     },
     subscribeToMessages:()=>{
-        const selectedUser=get()
+        const {selectedUser}=get();
         if(!selectedUser) return;
 
         const socket=useAuthStore.getState().socket;
@@ -67,6 +71,62 @@ export const useChatStore = create((set,get) =>({
         socket.off("newMessage");
     },
 
-    setSelectedUser: (selectedUser) => set({selectedUser}),
+    fetchBotMessages: async () => {
+    try {
+      const res = await axiosInstance.get("/groq/bot-history");
+      const botMsgs = res.data; 
+      set({ botMessages: botMsgs });
+    } catch (error) {
+      console.error("Error fetching bot messages:", error);
+    }
+  },
+
+  sendBotMessage: async (text) => {
+    const { authUser } = get(); 
+    const userId = authUser?._id;
+
+    
+    const promptMessage = {
+      _id: Date.now(), // temp ID
+      text,
+      senderId: userId,
+      createdAt: new Date().toISOString(),
+      isBot: false,
+    };
+    get().addMessage(promptMessage);
+
+    try {
+      const res = await axiosInstance.post("/groq/ask-bot", {
+        prompt: text,
+        history: [], 
+      });
+
+      const replyText = res.data.reply;
+
+      // Add bot reply to UI
+      const botMessage = {
+        _id: Date.now() + 1,
+        text: replyText,
+        senderId: "bot",
+        createdAt: new Date().toISOString(),
+        isBot: true,
+      };
+      get().addMessage(botMessage);
+    } catch (error) {
+      console.error("Bot error:", error);
+      get().addMessage({
+        _id: Date.now() + 2,
+        text: "⚠️ Failed to get response from AI assistant.",
+        senderId: "bot",
+        createdAt: new Date().toISOString(),
+        isBot: true,
+      });
+    }
+  },
+    setSelectedUser: (selectedUser) =>
+  set({
+    selectedUser,
+    isBotChat: selectedUser?.isBot || false,
+  }),
 
 }))

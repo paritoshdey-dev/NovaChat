@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    isBot: {
+      type: Boolean,
+      default: false, // Humans by default
+    }
   },
   { timestamps: true }
 );
