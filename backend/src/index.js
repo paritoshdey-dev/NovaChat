@@ -25,9 +25,30 @@ app.use(cors({
     credentials:true
 }));
 
-app.use("/api/auth",authRoutes);
-app.use("/api/messages",messageRoutes);
-app.use("/api/groq", aiBotRoutes);
+try {
+    console.log("Loading auth routes...");
+    app.use("/api/auth",authRoutes);
+    console.log("✅ Loaded /api/auth");
+} catch (error) {
+    console.error("❌ Failed to load /api/auth", e);
+}
+try {
+    console.log("Loading message routes...");
+    app.use("/api/messages",messageRoutes);
+    console.log("✅ Loaded /api/messages");
+} catch (error) {
+    console.error("❌ Failed to load /api/messages", e);
+}
+try {
+    console.log("Loading AI bot routes...");
+    app.use("/api/groq", aiBotRoutes);
+    console.log("✅ Loaded /api/groq");
+} catch (error) {
+    console.error("❌ Failed to load /api/groq", e);
+}
+
+
+
 
 if(process.env.NODE_ENV==="production"){
     app.use(express.static(path.join(__dirname,"../frontend/dist")));
