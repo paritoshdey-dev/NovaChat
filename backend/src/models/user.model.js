@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema(
     isBot: {
       type: Boolean,
       default: false, // Humans by default
-    }
+    },
   },
   { timestamps: true }
 );

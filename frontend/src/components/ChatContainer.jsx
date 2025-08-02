@@ -23,24 +23,29 @@ const ChatContainer = () => {
   const messageEndRef = useRef(null);
 
   useEffect(() => {
-    if(selectedUser.isBot){
+    if (selectedUser.isBot) {
       fetchBotMessages();
-    }else{
+    } else {
       getMessages(selectedUser._id);
 
       subscribeToMessages();
 
-    return () => unsubscribeFromMessages();
+      return () => unsubscribeFromMessages();
     }
-  }, [selectedUser._id, getMessages, subscribeToMessages, unsubscribeFromMessages,fetchBotMessages,botMessages]);
-
-
+  }, [
+    selectedUser._id,
+    getMessages,
+    subscribeToMessages,
+    unsubscribeFromMessages,
+    fetchBotMessages,
+    botMessages,
+  ]);
 
   useEffect(() => {
-  if (messageEndRef.current && messages) {
-    messageEndRef.current.scrollIntoView({ behavior: "smooth" });
-  }
-}, [messages]);
+    if (messageEndRef.current && messages) {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   if (isMessagesLoading) {
     return (

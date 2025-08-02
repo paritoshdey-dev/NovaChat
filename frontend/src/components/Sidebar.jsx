@@ -5,7 +5,8 @@ import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 import { Users } from "lucide-react";
 
 const Sidebar = () => {
-  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
+  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } =
+    useChatStore();
 
   const { onlineUsers } = useAuthStore();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
@@ -14,15 +15,13 @@ const Sidebar = () => {
     getUsers();
   }, [getUsers]);
 
-  useEffect(() => {
-}, [users, onlineUsers]);
+  useEffect(() => {}, [users, onlineUsers]);
 
   const filteredUsers = showOnlineOnly
     ? users.filter((user) => onlineUsers.includes(user._id))
     : users;
 
   if (isUsersLoading) return <SidebarSkeleton />;
-
 
   return (
     <aside className="h-full w-20 lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200">
@@ -42,7 +41,9 @@ const Sidebar = () => {
             />
             <span className="text-sm">Show online only</span>
           </label>
-          <span className="text-xs text-zinc-500">({onlineUsers.length - 1} online)</span>
+          <span className="text-xs text-zinc-500">
+            ({onlineUsers.length - 1} online)
+          </span>
         </div>
       </div>
 
@@ -54,21 +55,25 @@ const Sidebar = () => {
             className={`
               w-full p-3 flex items-center gap-3
               hover:bg-base-300 transition-colors
-              ${selectedUser?._id === user._id ? "bg-base-300 ring-1 ring-base-300" : ""}
+              ${
+                selectedUser?._id === user._id
+                  ? "bg-base-300 ring-1 ring-base-300"
+                  : ""
+              }
             `}
           >
             <div className="relative mx-auto lg:mx-0">
               <img
                 src={
                   user.isBot
-                  ? "/bot-avatar.png" 
-                  : user.profilePic || "/avatar.png"
+                    ? "/bot-avatar.png"
+                    : user.profilePic || "/avatar.png"
                 }
                 alt={user.name}
                 className="size-12 object-cover rounded-full"
                 onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = user.isBot ? "/bot-avatar.png" : "/avatar.png";
+                  e.target.onerror = null;
+                  e.target.src = user.isBot ? "/bot-avatar.png" : "/avatar.png";
                 }}
               />
               {onlineUsers.includes(user._id) && (

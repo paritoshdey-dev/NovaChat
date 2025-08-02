@@ -8,11 +8,7 @@ const MessageInput = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
 
-  const {
-    sendMessage,
-    sendBotMessage,
-    isBotChat, 
-  } = useChatStore();
+  const { sendMessage, sendBotMessage, isBotChat } = useChatStore();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -81,7 +77,9 @@ const MessageInput = () => {
           <input
             type="text"
             className="w-full input input-bordered rounded-lg input-sm sm:input-md"
-            placeholder={isBotChat ? "Ask your assistant..." : "Type a message..."}
+            placeholder={
+              isBotChat ? "Ask your assistant..." : "Type a message..."
+            }
             value={text}
             onChange={(e) => setText(e.target.value)}
           />

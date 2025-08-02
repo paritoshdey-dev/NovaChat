@@ -1,7 +1,7 @@
 import express from "express";
 import { getGroqReply } from "../lib/groq_ai.js";
 import BotMessage from "../models/botmessage.model.js";
-import { protectRoute } from "../middleware/auth.middleware.js"; 
+import { protectRoute } from "../middleware/auth.middleware.js";
 import { getBotMessages } from "../controllers/message.controller.js";
 
 const router = express.Router();
@@ -20,10 +20,10 @@ router.post("/ask-bot", protectRoute, async (req, res) => {
     await BotMessage.create({
       userId,
       prompt,
-      response: response.reply
+      response: response.reply,
     });
 
-    res.status(200).json(response); 
+    res.status(200).json(response);
   } catch (err) {
     console.error("Bot error:", err.message);
     res.status(500).json({ error: "Failed to get bot reply" });
@@ -33,4 +33,3 @@ router.post("/ask-bot", protectRoute, async (req, res) => {
 router.get("/bot-history", protectRoute, getBotMessages);
 
 export default router;
-
