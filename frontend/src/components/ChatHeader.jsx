@@ -29,7 +29,7 @@ const ChatHeader = () => {
             <h3 className="font-medium">{selectedUser.fullName}</h3>
             <p className="text-sm text-base-content/70">
               {selectedUser.isBot
-                ? "with LLaMA 3"
+                ? "with LLaMA 4"
                 : onlineUsers.includes(selectedUser._id)
                 ? "Online"
                 : "Offline"}

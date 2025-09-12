@@ -89,7 +89,7 @@ const Sidebar = () => {
               <div className="font-medium truncate">{user.fullName}</div>
               <div className="text-sm text-zinc-400">
                 {user.isBot
-                  ? "with LLaMA 3"
+                  ? "with LLaMA 4"
                   : onlineUsers.includes(user._id)
                   ? "Online"
                   : "Offline"}
