@@ -4,7 +4,7 @@ import axios from "axios";
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 
-const DEFAULT_MODEL = "llama3-70b-8192";
+const DEFAULT_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
 
 export async function getGroqReply(prompt, history = [], options = {}) {
   if (!GROQ_API_KEY) {
